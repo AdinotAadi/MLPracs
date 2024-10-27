@@ -1,0 +1,37 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+# Load the dataset
+data = pd.read_csv('/content/Heart_Disease_Dataset.csv')
+
+# Extract independent and target variables
+X = data[['chol']]
+y = data['target']
+
+# Min-Max scaling for 'chol'
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Train a simple logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Get predictions on the test set
+y_pred = model.predict(X_test)
+
+# Plot the scatter plot with the regression curve
+plt.figure()
+plt.scatter(X_test, y_test, color='blue', label='Actual')
+plt.plot(X_test, y_pred, color='red', label='Logistic Regression Curve')
+plt.xlabel('Cholestrol (Scaled)')
+plt.ylabel('Target (Heart Disease)')
+plt.title('Logistic Regression: Cholestrol vs Target')
+plt.legend()
+plt.show()

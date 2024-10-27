@@ -1,0 +1,46 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.tree import plot_tree
+from sklearn.preprocessing import LabelEncoder
+
+# Load the dataset
+data = pd.read_csv('/content/Breast_Cancer_Dataset.csv')
+
+# Drop the 'id' column
+data = data.drop('id', axis=1)
+
+# Encode the 'diagnosis' column
+label_encoder = LabelEncoder()
+data['diagnosis'] = label_encoder.fit_transform(data['diagnosis'])
+# 'B' will be 0, 'M' will be 1
+
+# Separate features (X) and target (y)
+X = data.drop('diagnosis', axis=1)
+y = data['diagnosis']
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Decision Tree Classifier with 'entropy' criterion
+model = DecisionTreeClassifier(criterion='entropy', random_state=42)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Visualize the decision tree
+plt.figure(figsize=(20, 10))
+plot_tree(model, feature_names=X.columns, class_names=['B', 'M'], filled=True)
+plt.show()
+
+# Plot the histogram for the classes 'B' and 'M'
+plt.figure()
+plt.hist(data[data['diagnosis'] == 0]['diagnosis'], bins=2, alpha=0.5, label='Benign (B)')
+plt.hist(data[data['diagnosis'] == 1]['diagnosis'], bins=2, alpha=0.5, label='Malignant (M)')
+plt.xlabel('Diagnosis')
+plt.ylabel('Frequency')
+plt.title('Histogram of Diagnosis Classes')
+plt.legend()
+plt.show()

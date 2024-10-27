@@ -1,0 +1,32 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+# Load the Iris dataset
+data = pd.read_csv('/content/Iris_Dataset.csv')
+
+# Extract features for clustering
+X = data[['petal.width', 'petal.length']]
+
+# Standardize the features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply K-Means clustering with 3 clusters
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X_scaled)
+
+# Get cluster labels
+cluster_labels = kmeans.labels_
+
+# Add cluster labels to the DataFrame
+data['cluster'] = cluster_labels
+
+# Plot the scatter plot of Petal Width vs Length, colored by cluster
+plt.figure(figsize=(8, 6))
+plt.scatter(data['petal.width'], data['petal.length'], c=data['cluster'], cmap='viridis')
+plt.xlabel('Petal Width (cm)')
+plt.ylabel('Petal Length (cm)')
+plt.title('K-Means Clustering of Iris Dataset (Petal Width vs Length)')
+plt.show()
